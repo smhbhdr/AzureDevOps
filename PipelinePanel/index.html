@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      .widget {
+        position: relative;
+        padding: 0 !important;
+      }
+
+      .widget .title {
+        margin: 10px 14px !important;
+      }
+
+      .widget .big-count {
+        text-align: center !important;
+      }
+
+      .success {
+        background-color: #107c10;
+        color: #fff;
+      }
+
+      .failure {
+        background-color: #ff0033;
+        color: #fff;
+      }
+
+      .success.in-progress {
+        animation: success-pulse 3s infinite;
+      }
+
+      .failure.in-progress {
+        animation: failure-pulse 3s infinite;
+      }
+
+      @keyframes success-pulse {
+        0% {
+          background-color: #107c10;
+        }
+        50% {
+          background-color: #0A4A0A;
+        }
+        100% {
+          background-color: #107c10;
+        }
+      }
+
+      @keyframes failure-pulse {
+        0% {
+          background-color: #ff0033;
+        }
+        50% {
+          background-color: #cc0028;
+        }
+        100% {
+          background-color: #ff0033;
+        }
+      }
+    </style>
+    <script src="sdk/scripts/VSS.SDK.min.js"></script>
+    <script type="text/javascript">
+      VSS.init({
+        explicitNotifyLoaded: true,
+        usePlatformStyles: true
+      });
+
+      VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/Build/RestClient", "TFS/Build/Contracts"], function (WidgetHelpers, RestClient, Contracts) {
+        WidgetHelpers.IncludeWidgetStyles();
+        VSS.register("ProjectTile", function () {
+          var projectId = VSS.getWebContext().project.id;
+
+          var getBuildInfo = function (widgetSettings) {
+            var settings = JSON.parse(widgetSettings.customSettings.data);
+
+            return RestClient.getClient().getBuilds(projectId, [parseInt(settings.definitionId)])
+              .then(function (builds) {
+                var build = builds[0];
+                var $widget = $('.widget');
+
+                if (build.status === Contracts.BuildStatus.Completed) {
+                  $widget.removeClass('in-progress');
+
+                  if (build.result === Contracts.BuildResult.Succeeded) {
+                    $widget.removeClass('failure');
+                    $widget.addClass('success');
+                  }
+
+                  if (build.result === Contracts.BuildResult.Failed) {
+                    $widget.removeClass('success');
+                    $widget.addClass('failure');
+                  }
+                }
+
+                if (build.status === Contracts.BuildStatus.InProgress) {
+                  $widget.addClass('in-progress')
+                }
+
+                if (settings) {
+                  if (settings.friendlyName) {
+                    $widget.find('.big-count').text(settings.friendlyName);
+                  }
+
+                  if (settings.definitionName) {
+                    $widget.find('.title').text(settings.definitionName);
+                  }
+                }
+              })
+              .catch(function (error) {
+                console.error(error);
+                return WidgetHelpers.WidgetStatusHelper.Failure(error.message);
+              });
+          };
+
+          return {
+            load: function (widgetSettings) {
+              var settings = JSON.parse(widgetSettings.customSettings.data);
+
+              if (settings && settings.definitionId) {
+                getBuildInfo(widgetSettings);
+
+                if (settings.pollInterval) {
+                  setInterval(getBuildInfo.bind(getBuildInfo, widgetSettings), settings.pollInterval);
+                }
+
+                return WidgetHelpers.WidgetStatusHelper.Success();
+              }
+
+              return WidgetHelpers.WidgetStatusHelper.Unconfigured();
+            },
+            reload: function (widgetSettings) {
+              var settings = JSON.parse(widgetSettings.customSettings.data);
+
+              if (settings && settings.definitionId) {
+                getBuildInfo(widgetSettings);
+
+                if (settings.pollInterval) {
+                  setInterval(getBuildInfo.bind(getBuildInfo, widgetSettings), settings.pollInterval);
+                }
+
+                return WidgetHelpers.WidgetStatusHelper.Success();
+              }
+
+              return WidgetHelpers.WidgetStatusHelper.Unconfigured();
+            }
+          }
+        });
+        VSS.notifyLoadSucceeded();
+      });
+    </script>
+  </head>
+  <body>
+    <div class="widget">
+      <h2 class="title">Project Tile</h2>
+      <div class="big-count"></div>
+    </div>
+  </body>
+</html>

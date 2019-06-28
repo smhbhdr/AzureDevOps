@@ -1,0 +1,110 @@
+{
+  "manifestVersion": 1,
+  "id": "PipelinePanel",
+  "version": "1.0.5",
+  "name": "Pipeline Panel",
+  "description": "A dashboard tile to show insights of a pipeline",
+  "publisher": "semihbahadir",
+  "public": false, 
+  "tags": [
+    "dashboard",
+    "dashboard widget",
+    "build",
+    "build status",
+    "build indicator",
+    "build result",
+    "CI",
+    "continuous integration",
+    "build monitor"
+  ],
+  "targets": [
+    {
+      "id": "Microsoft.VisualStudio.Services"
+    }
+  ],
+  "icons": {
+    "default": "img/icon-128.png",
+    "large": "img/icon-512.png"
+  },
+  "categories": [ "Azure Pipelines" ],
+  "repository": {
+    "type": "git",
+    "uri": "https://github.com/smhbhdr/AzureDevOps/PipelinePanel"
+  },
+  "content": {
+    "details": {
+      "path": "README.md"
+    },
+    "license": {
+      "path": "LICENSE"
+    }
+  },
+  "contributions": [
+    {
+      "id": "PipelinePanel",
+      "type": "ms.vss-dashboards-web.widget",
+      "targets": [
+        "ms.vss-dashboards-web.widget-catalog",
+        "semihbahadir.PipelinePanel.Configuration"
+      ],
+      "properties": {
+        "name": "Pipeline Panel",
+        "description": "A dashboard tile to show insights of a pipeline",
+        "catalogIconUrl:": "img/icon.png",
+        "previewImageUrl": "img/preview.png",
+        "uri": "index.html",
+        "supportedSizes": [
+          {
+            "rowSpan": 1,
+            "columnSpan": 1
+          },
+          {
+            "rowSpan": 1,
+            "columnSpan": 2
+          },
+          {
+            "rowSpan": 1,
+            "columnSpan": 3
+          },
+          {
+            "rowSpan": 1,
+            "columnSpan": 4
+          }
+        ],
+        "supportedScopes": [ "project_team" ]
+      }
+    },
+    {
+      "id": "PipelinePanel.Configuration",
+      "type": "ms.vss-dashboards-web.widget-configuration",
+      "targets": [ "ms.vss-dashboards-web.widget-configuration" ],
+      "properties": {
+        "name": "Pipeline Panel Configuration",
+        "description": "Configures a Pipeline Panel",
+        "uri": "configuration.html"
+      }
+    }
+  ],
+  "files": [
+    {
+      "path": "index.html",
+      "addressable": true
+    },
+    {
+      "path": "configuration.html",
+      "addressable": true
+    },
+    {
+      "path": "sdk/scripts",
+      "addressable": true
+    },
+    {
+      "path": "img",
+      "addressable": true
+    }
+  ],
+  "scopes": [
+    "vso.build",
+    "vso.release"
+  ]
+}
