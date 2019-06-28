@@ -1,158 +1,160 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
-
 <head>
-  <!--<style>
-    .widget-configuration > div {
-      margin-bottom: 15px;
-    }
-  </style>-->
-  <script src="sdk/scripts/VSS.SDK.min.js"></script>
-  <script type="text/javascript">
-    VSS.init({
-      explicitNotifyLoaded: true,
-      usePlatformStyles: true
-    });
+    <link rel="stylesheet" href="css/app.css" type="text/css" />
+    <style>
+      .widget-configuration > div {
+        margin-bottom: 15px;
+      }
+    </style>
+    <script src="sdk/scripts/VSS.SDK.min.js"></script>
+    <script type="text/javascript">
+        VSS.init({
+            explicitNotifyLoaded: true,
+            usePlatformStyles: true
+        });
 
-    VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/Build/RestClient"], function (WidgetHelpers, RestClient) {
-      WidgetHelpers.IncludeWidgetConfigurationStyles();
-      VSS.register("PipelinePanel.Configuration", function () {
-        var projectId = VSS.getWebContext().project.id;
+        VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/Build/RestClient"],
+            function (WidgetHelpers, RestClient) {
+                WidgetHelpers.IncludeWidgetConfigurationStyles();
+                VSS.register("PipelinePanel.Configuration",
+                    function () {
+                        var projectId = VSS.getWebContext().project.id;
 
-        function formatDefinitionValue (id, name) {
-          return '{ \"id\": \"' + id + '\", \"name\": \"' + name + '\" }'
-        }
+                        function formatDefinitionValue(id, name) {
+                            return '{ \"id\": \"' + id + '\", \"name\": \"' + name + '\" }'
+                        }
 
-        return {
-          load: function (widgetSettings, widgetConfigurationContext) {
-            var $buildDefDropdown = $("#build-definition select");
+                        return {
+                            load: function (widgetSettings, widgetConfigurationContext) {
+                                var $buildDefDropdown = $("#build-definition select");
 
-            function updateLivePreview () {
-              var definition = JSON.parse($buildDefDropdown.val());
+                                function updateLivePreview() {
+                                    var definition = JSON.parse($buildDefDropdown.val());
 
-              var customSettings = {
-                data: JSON.stringify({
-                  definitionId: definition.id,
-                  definitionName: definition.name,
-                  friendlyName: $('#friendly-name input').val()
-                })
-              };
+                                    var customSettings = {
+                                        data: JSON.stringify({
+                                            definitionId: definition.id,
+                                            definitionName: definition.name,
+                                            friendlyName: $('#friendly-name input').val()
+                                        })
+                                    };
 
-              var eventName = WidgetHelpers.WidgetEvent.ConfigurationChange;
-              var eventArgs = WidgetHelpers.WidgetEvent.Args(customSettings);
+                                    var eventName = WidgetHelpers.WidgetEvent.ConfigurationChange;
+                                    var eventArgs = WidgetHelpers.WidgetEvent.Args(customSettings);
 
-              widgetConfigurationContext.notify(eventName, eventArgs);
-            }
+                                    widgetConfigurationContext.notify(eventName, eventArgs);
+                                }
 
-            RestClient.getClient().getDefinitions(projectId)
-              .then(function (definitions) {
-                console.log(definitions);
-                definitions.forEach(function (definition) {
-                  var $option = $('<option>').text(definition.name);
-                  var value = formatDefinitionValue(definition.id, definition.name);
-                  $option.val(value);
-                  $buildDefDropdown.append($option);
-                });
-              });
+                                RestClient.getClient().getDefinitions(projectId)
+                                    .then(function (definitions) {
+                                        console.log(definitions);
+                                        definitions.forEach(function (definition) {
+                                            var $option = $('<option>').text(definition.name);
+                                            var value = formatDefinitionValue(definition.id, definition.name);
+                                            $option.val(value);
+                                            $buildDefDropdown.append($option);
+                                        });
+                                    });
 
-            $('#friendly-name input').on('keyup', function () {
-              updateLivePreview();
+                                $('#friendly-name input').on('keyup',
+                                    function () {
+                                        updateLivePreview();
 
-              var input = $(this);
-              var inputError = $('#friendly-name .validation-error-text');
+                                        var input = $(this);
+                                        var inputError = $('#friendly-name .validation-error-text');
 
-              if (input.val().length > 3) {
-                inputError.text('There\'s only room for 3 characters in a 1x1 tile')
-                inputError.parent().css('visibility', 'visible');
-                return;
-              }
+                                        if (input.val().length > 3) {
+                                            inputError.text('There\'s only room for 3 characters in a 1x1 tile')
+                                            inputError.parent().css('visibility', 'visible');
+                                            return;
+                                        }
 
-              inputError.parent().css('visibility', 'hidden');
+                                        inputError.parent().css('visibility', 'hidden');
+                                    });
+
+                                $buildDefDropdown.on("change",
+                                    function () {
+                                        updateLivePreview();
+                                    });
+
+                                $('#poll-interval input').on('input',
+                                    function () {
+                                        var input = $(this);
+                                        var inputError = $('#poll-interval .validation-error-text');
+
+                                        if (input.val() === "") {
+                                            inputError.text('Enter a poll interval')
+                                            inputError.parent().css('visibility', 'visible');
+                                            return;
+                                        }
+
+                                        if (parseInt(input.val()) < 10) {
+                                            inputError.text('Poll interval must be at least 10 seconds')
+                                            inputError.parent().css('visibility', 'visible');
+                                            return;
+                                        }
+
+                                        inputError.parent().css('visibility', 'hidden');
+                                    });
+
+                                var settings = JSON.parse(widgetSettings.customSettings.data);
+                                if (settings && settings.definitionId && settings.definitionName) {
+                                    $buildDefDropdown.val(formatDefinitionValue(settings.definitionId,
+                                        settings.definitionName));
+                                }
+
+                                return WidgetHelpers.WidgetStatusHelper.Success();
+                            },
+                            onSave: function () {
+                                var $buildDefDropdown = $("#build-definition select");
+                                var buildDefDropdownValue = $buildDefDropdown.val();
+                                var definition = JSON.parse(buildDefDropdownValue);
+
+                                var customSettings = {
+                                    data: JSON.stringify({
+                                        definitionId: definition.id,
+                                        definitionName: definition.name,
+                                        friendlyName: $('#friendly-name input').val(),
+                                        pollInterval: parseInt($('#poll-interval input').val()) * 1000
+                                    })
+                                };
+
+                                return WidgetHelpers.WidgetConfigurationSave.Valid(customSettings);
+                            }
+                        }
+                    });
+
+                VSS.notifyLoadSucceeded();
             });
-
-            $buildDefDropdown.on("change", function () {
-              updateLivePreview();
-            });
-
-            $('#poll-interval input').on('input', function () {
-              var input = $(this);
-              var inputError = $('#poll-interval .validation-error-text');
-
-              if (input.val() === "") {
-                inputError.text('Enter a poll interval')
-                inputError.parent().css('visibility', 'visible');
-                return;
-              }
-
-              if (parseInt(input.val()) < 10) {
-                inputError.text('Poll interval must be at least 10 seconds')
-                inputError.parent().css('visibility', 'visible');
-                return;
-              }
-
-              inputError.parent().css('visibility', 'hidden');
-            });
-
-            var settings = JSON.parse(widgetSettings.customSettings.data);
-            if (settings && settings.definitionId && settings.definitionName) {
-              $buildDefDropdown.val(formatDefinitionValue(settings.definitionId, settings.definitionName));
-            }
-
-            return WidgetHelpers.WidgetStatusHelper.Success();
-          },
-          onSave: function () {
-            var $buildDefDropdown = $("#build-definition select");
-            var buildDefDropdownValue = $buildDefDropdown.val();
-            var definition = JSON.parse(buildDefDropdownValue);
-
-            var customSettings = {
-              data: JSON.stringify({
-                definitionId: definition.id,
-                definitionName: definition.name,
-                friendlyName: $('#friendly-name input').val(),
-                pollInterval: parseInt($('#poll-interval input').val()) * 1000
-              })
-            };
-
-            return WidgetHelpers.WidgetConfigurationSave.Valid(customSettings);
-          }
-        }
-      });
-
-      VSS.notifyLoadSucceeded();
-    });
-  </script>
+    </script>
 </head>
-
 <body>
-  <div class="widget-configuration">
-    <div class="dropdown" id="build-definition">
-      <label class="label">Build definition</label>
-      <select>
-        <option value="" selected disabled hidden>Please select a build definition</option>
-      </select>
+    <div class="widget-configuration">
+        <div class="dropdown" id="build-definition">
+            <label class="label">Build definition</label>
+            <select>
+                <option value="" selected disabled hidden>Please select a build definition</option>
+            </select>
+        </div>
+        <div class="single-line-text-input" id="friendly-name">
+            <label>Short name</label>
+            <input type="text"></input>
+
+            <span class="validation-error">
+                <span class="icon-error-exclamation"></span>
+                <span class="validation-error-text"></span>
+            </span>
+        </div>
+        <div class="single-line-text-input" id="poll-interval">
+            <label>Poll interval (in sec)</label>
+            <input type="text" value="30"></input>
+
+            <span class="validation-error">
+                <span class="icon-error-exclamation"></span>
+                <span class="validation-error-text"></span>
+            </span>
+        </div>
     </div>
-
-    <div class="single-line-text-input" id="friendly-name">
-      <label>Friendly name</label>
-      <input type="text"></input>
-
-      <span class="validation-error">
-        <span class="icon-error-exclamation"></span>
-        <span class="validation-error-text"></span>
-      </span>
-    </div>
-
-    <div class="single-line-text-input" id="poll-interval">
-      <label>Poll interval (in seconds)</label>
-      <input type="text" value="30"></input>
-
-      <span class="validation-error">
-        <span class="icon-error-exclamation"></span>
-        <span class="validation-error-text"></span>
-      </span>
-    </div>
-  </div>
 </body>
-
 </html>

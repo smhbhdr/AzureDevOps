@@ -1,7 +1,7 @@
 {
   "manifestVersion": 1,
   "id": "PipelinePanel",
-  "version": "1.0.7",
+  "version": "1.0.14",
   "name": "Pipeline Panel",
   "description": "A dashboard tile to show insights of a pipeline",
   "publisher": "semihbahadir",
@@ -96,6 +96,10 @@
     },
     {
       "path": "sdk/scripts",
+      "addressable": true
+    },
+    {
+      "path": "css",
       "addressable": true
     },
     {
