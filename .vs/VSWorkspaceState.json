@@ -1,0 +1,9 @@
+{
+  "ExpandedNodes": [
+    "\\PipelinePanel",
+    "\\PipelinePanel\\sdk",
+    "\\PipelinePanel\\sdk\\scripts"
+  ],
+  "SelectedNode": "\\PipelinePanel\\vss-extension.json",
+  "PreviewInSolutionExplorer": false
+}

@@ -1,7 +1,7 @@
 {
   "manifestVersion": 1,
   "id": "PipelinePanel",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "name": "Pipeline Panel",
   "description": "A dashboard tile to show insights of a pipeline",
   "publisher": "semihbahadir",
@@ -45,7 +45,7 @@
       "type": "ms.vss-dashboards-web.widget",
       "targets": [
         "ms.vss-dashboards-web.widget-catalog",
-        "semihbahadir.PipelinePanel.Configuration"
+        "semihbahadir.PipelinePanel.PipelinePanel.Configuration"
       ],
       "properties": {
         "name": "Pipeline Panel",

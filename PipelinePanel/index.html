@@ -66,7 +66,7 @@
 
       VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/Build/RestClient", "TFS/Build/Contracts"], function (WidgetHelpers, RestClient, Contracts) {
         WidgetHelpers.IncludeWidgetStyles();
-        VSS.register("ProjectTile", function () {
+        VSS.register("PipelinePanel", function () {
           var projectId = VSS.getWebContext().project.id;
 
           var getBuildInfo = function (widgetSettings) {
@@ -150,7 +150,7 @@
   </head>
   <body>
     <div class="widget">
-      <h2 class="title">Project Tile</h2>
+      <h2 class="title">Pipeline Panel</h2>
       <div class="big-count"></div>
     </div>
   </body>
