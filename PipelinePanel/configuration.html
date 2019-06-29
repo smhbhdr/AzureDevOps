@@ -3,9 +3,9 @@
 <head>
     <link rel="stylesheet" href="css/app.css" type="text/css" />
     <style>
-      .widget-configuration > div {
-        margin-bottom: 15px;
-      }
+        .widget-configuration > div {
+            margin-bottom: 15px;
+        }
     </style>
     <script src="sdk/scripts/VSS.SDK.min.js"></script>
     <script type="text/javascript">
@@ -22,7 +22,7 @@
                         var projectId = VSS.getWebContext().project.id;
 
                         function formatDefinitionValue(id, name) {
-                            return '{ \"id\": \"' + id + '\", \"name\": \"' + name + '\" }'
+                            return '{ \"id\": \"' + id + '\", \"name\": \"' + name + '\" }';
                         }
 
                         return {
@@ -36,7 +36,7 @@
                                         data: JSON.stringify({
                                             definitionId: definition.id,
                                             definitionName: definition.name,
-                                            friendlyName: $('#friendly-name input').val()
+                                            testSite: $('#test-site input').val()
                                         })
                                     };
 
@@ -57,15 +57,15 @@
                                         });
                                     });
 
-                                $('#friendly-name input').on('keyup',
+                                $('#test-site input').on('keyup',
                                     function () {
                                         updateLivePreview();
 
                                         var input = $(this);
-                                        var inputError = $('#friendly-name .validation-error-text');
+                                        var inputError = $('#test-site .validation-error-text');
 
-                                        if (input.val().length > 3) {
-                                            inputError.text('There\'s only room for 3 characters in a 1x1 tile')
+                                        if (input.val().length === 0) {
+                                            inputError.text('Please enter a site URL')
                                             inputError.parent().css('visibility', 'visible');
                                             return;
                                         }
@@ -76,26 +76,6 @@
                                 $buildDefDropdown.on("change",
                                     function () {
                                         updateLivePreview();
-                                    });
-
-                                $('#poll-interval input').on('input',
-                                    function () {
-                                        var input = $(this);
-                                        var inputError = $('#poll-interval .validation-error-text');
-
-                                        if (input.val() === "") {
-                                            inputError.text('Enter a poll interval')
-                                            inputError.parent().css('visibility', 'visible');
-                                            return;
-                                        }
-
-                                        if (parseInt(input.val()) < 10) {
-                                            inputError.text('Poll interval must be at least 10 seconds')
-                                            inputError.parent().css('visibility', 'visible');
-                                            return;
-                                        }
-
-                                        inputError.parent().css('visibility', 'hidden');
                                     });
 
                                 var settings = JSON.parse(widgetSettings.customSettings.data);
@@ -115,8 +95,7 @@
                                     data: JSON.stringify({
                                         definitionId: definition.id,
                                         definitionName: definition.name,
-                                        friendlyName: $('#friendly-name input').val(),
-                                        pollInterval: parseInt($('#poll-interval input').val()) * 1000
+                                        testSite: $('#test-site input').val()
                                     })
                                 };
 
@@ -137,8 +116,8 @@
                 <option value="" selected disabled hidden>Please select a build definition</option>
             </select>
         </div>
-        <div class="single-line-text-input" id="friendly-name">
-            <label>Short name</label>
+        <div class="single-line-text-input" id="test-site">
+            <label>Test Site Address</label>
             <input type="text"></input>
 
             <span class="validation-error">
@@ -146,7 +125,8 @@
                 <span class="validation-error-text"></span>
             </span>
         </div>
-        <div class="single-line-text-input" id="poll-interval">
+
+        <!--<div class="single-line-text-input" id="poll-interval">
             <label>Poll interval (in sec)</label>
             <input type="text" value="30"></input>
 
@@ -154,7 +134,7 @@
                 <span class="icon-error-exclamation"></span>
                 <span class="validation-error-text"></span>
             </span>
-        </div>
+        </div>-->
     </div>
 </body>
 </html>

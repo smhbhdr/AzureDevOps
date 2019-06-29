@@ -103,11 +103,19 @@
                                         $widget.addClass('in-progress');
                                     }
 
-                                    
+                                    $widget.find('.build-version').text(build.buildNumber);
+
+                                    $widget.find('.build-queuedby').text(build.requestedBy.displayName);
+
+                                    $widget.find('.build-completed').text(build.finishTime);
+
+                                    //$widget.find('.deploy-button').href(settings.testSite);
+
+                                    $widget.find('.build-definition-name').text(build.definitionName);
 
                                     if (settings) {
-                                        if (settings.friendlyName) {
-                                            //$widget.find('.big-count').text(settings.friendlyName);
+                                        if (settings.testSite) {
+                                            $widget.find('.test-site').text(settings.testSite);
                                         }
 
                                         if (settings.definitionName) {
@@ -128,10 +136,7 @@
                                 if (settings && settings.definitionId) {
                                     getBuildInfo(widgetSettings);
 
-                                    if (settings.pollInterval) {
-                                        setInterval(getBuildInfo.bind(getBuildInfo, widgetSettings),
-                                            settings.pollInterval);
-                                    }
+                                    
 
                                     return WidgetHelpers.WidgetStatusHelper.Success();
                                 }
@@ -144,10 +149,7 @@
                                 if (settings && settings.definitionId) {
                                     getBuildInfo(widgetSettings);
 
-                                    if (settings.pollInterval) {
-                                        setInterval(getBuildInfo.bind(getBuildInfo, widgetSettings),
-                                            settings.pollInterval);
-                                    }
+                                   
 
                                     return WidgetHelpers.WidgetStatusHelper.Success();
                                 }
@@ -161,26 +163,40 @@
     </script>
 </head>
 <body id="root" class="widget clickable">
-    <a id="buildDefinitionNavigateUrl" target="_blank">
-        <div id="details">
-            <div class="build-status-row">
-                <div class="build-status" id="buildStatus"></div>
-                <div class="build-definition-name" id="buildDefinitionName"></div>
-            </div>
-            <div>
-                <div class="build-version-label">Version:</div>
-                <div id="buildVersion" class="build-version"></div>
-            </div>
-            <div>
-                <div class="build-queuedby-label">Queued by:</div>
-                <div id="buildQueuedBy" class="build-queuedby"></div>
-            </div>
-            <div>
-                <div class="build-completed-label">Completed:</div>
-                <div id="buildCompleted" class="build-completed"></div>
-            </div>
+    <!--<a id="buildDefinitionNavigateUrl" target="_blank">-->
+    <div id="details">
+        <div class="build-status-row">
+            <div class="build-definition-name" id="buildDefinitionName"></div>
         </div>
-        <div id="nodata"></div>
-    </a>
+        <div>
+            <div class="build-version-label">Version:</div>
+            <div id="buildVersion" class="build-version"></div>
+        </div>
+        <div>
+            <div class="build-queuedby-label">Queued by:</div>
+            <div id="buildQueuedBy" class="build-queuedby"></div>
+        </div>
+        <div>
+            <div class="build-completed-label">Completed:</div>
+            <div id="buildCompleted" class="build-completed"></div>
+        </div>
+        <div>
+            <div class="test-site-label">Test Site:</div>
+            <a id="testSite" class="test-site" target="_blank"></a>
+        </div>
+        <div class="dropdown">
+            <label class="database-restore-label">New Deployment:</label>
+            <select class="selectBox">
+                <option value="0" selected>Do not restore</option>
+                <option value="1">Production</option>
+                <option value="2">Release</option>
+                <option value="3">Development</option>
+                <option value="4">Master</option>
+            </select>
+            <a id="deployNewBuild" class="deploy-button" href="#" target="_blank">Start Deployment</a>
+        </div>
+    </div>
+    <div id="nodata"></div>
+    <!--</a>-->
 </body>
 </html>
