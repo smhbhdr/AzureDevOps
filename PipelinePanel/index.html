@@ -109,13 +109,12 @@
 
                                     $widget.find('.build-completed').text(build.finishTime);
 
-                                    //$widget.find('.deploy-button').href(settings.testSite);
-
                                     $widget.find('.build-definition-name').text(build.definitionName);
 
                                     if (settings) {
                                         if (settings.testSite) {
                                             $widget.find('.test-site').text(settings.testSite);
+                                            $('#testSite').attr('href', settings.testSite);
                                         }
 
                                         if (settings.definitionName) {
@@ -134,9 +133,10 @@
                                 var settings = JSON.parse(widgetSettings.customSettings.data);
 
                                 if (settings && settings.definitionId) {
+
                                     getBuildInfo(widgetSettings);
 
-                                    
+                                    //$('#deployNewBuild').click(deployNewPackage(widgetSettings));
 
                                     return WidgetHelpers.WidgetStatusHelper.Success();
                                 }
@@ -149,12 +149,22 @@
                                 if (settings && settings.definitionId) {
                                     getBuildInfo(widgetSettings);
 
-                                   
+
 
                                     return WidgetHelpers.WidgetStatusHelper.Success();
                                 }
 
                                 return WidgetHelpers.WidgetStatusHelper.Unconfigured();
+                            },
+                            deployNewPackage: function (widgetSettings) {
+                                //var settings = JSON.parse(widgetSettings.customSettings.data);
+
+                                //return RestClient.getClient().getBuilds(projectId, [parseInt(settings.definitionId)])
+                                //    .then(function (builds) {
+                                //        var build = builds[0];
+
+                                //        RestClient.getClient().queueBuild(build);
+                                //    });
                             }
                         }
                     });
@@ -182,17 +192,20 @@
         </div>
         <div>
             <div class="test-site-label">Test Site:</div>
-            <a id="testSite" class="test-site" target="_blank"></a>
+            <div id="testSiteWrappper" class="test-site-wrapper">
+                <a id="testSite" class="test-site" href="#" target="_blank"></a>
+            </div>
         </div>
         <div class="dropdown">
             <label class="database-restore-label">New Deployment:</label>
-            <select class="selectBox">
+            <select id="dropDownRestore" class="selectBox">
                 <option value="0" selected>Do not restore</option>
                 <option value="1">Production</option>
                 <option value="2">Release</option>
                 <option value="3">Development</option>
                 <option value="4">Master</option>
             </select>
+
             <a id="deployNewBuild" class="deploy-button" href="#" target="_blank">Start Deployment</a>
         </div>
     </div>

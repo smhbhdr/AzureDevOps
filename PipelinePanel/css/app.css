@@ -8,7 +8,21 @@
     color: white !important;
 }
 
-.widget.clickable > a {
+.a#testSite:link, a#testSite:visited, a#deployNewBuild:link, a#deployNewBuild:visited {
+    color: white !important;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.a#testSite:hover, a#deployNewBuild:hover {
+    color: black !important;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.widget.clickable {
     color: white !important;
 }
 
@@ -16,27 +30,17 @@
     background-color: turquoise !important;
 }
 
-.deploy-button:link, deploy-button:visited, deploy-button:hover, deploy-button:active > a {
-    color: white;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
+.deploy-button {
+    text-align: right;
 }
 
-.test-site :link, .test-site:visited > a {
+/*.deploy-button:link, deploy-button:visited, deploy-button:hover, deploy-button:active > a {
     color: white;
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    width: 190px;
-}
-/*.test-site {
-    display: inline-block;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    width: 190px;
-    white-space: nowrap;
 }*/
+
 #buildDefinitionDropDown {
     width: 100%;
 }
@@ -221,7 +225,7 @@ div .counter-inprogress {
     display: inline-block;
     text-overflow: ellipsis;
     overflow: hidden;
-    width: 190px;
+    width: 250px;
     white-space: nowrap;
 }
 
@@ -277,7 +281,7 @@ div .counter-inprogress {
     display: inline-block;
     text-overflow: ellipsis;
     overflow: hidden;
-    width: 190px;
+    width: 250px;
     white-space: nowrap;
 }
 
@@ -291,7 +295,7 @@ div .counter-inprogress {
     display: inline-block;
     text-overflow: ellipsis;
     overflow: hidden;
-    width: 190px;
+    width: 250px;
     white-space: nowrap;
 }
 
@@ -301,7 +305,13 @@ div .counter-inprogress {
     overflow: hidden;
 }
 
-
+.test-site-wrapper {
+    display: inline-block;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 250px;
+    white-space: nowrap;
+}
 
 .database-restore-label {
     color: white;
